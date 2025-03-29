@@ -2,6 +2,43 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+
+# Job Board Platform 🚀
+
+A modern job listing application built with Next.js, MongoDB, and Tailwind CSS.
+
+![Job Board Screenshot](/public/screenshot.png) <!-- Add your screenshot here -->
+
+## ✨ Features
+
+### ✅ Implemented
+- Job Listings
+  - Filter by job type (Full-Time, Part-Time, etc.) and location
+  - Search by keywords, title, or company
+  - Sort by date, salary, or title
+- Job Details
+  - Comprehensive job information display
+  - Featured job highlighting
+- UI/UX
+  - Dark/Light mode toggle
+  - Responsive design
+  - Loading skeletons
+  - Animated transitions with Framer Motion
+- Backend
+  - MongoDB integration
+  - API routes for job CRUD operations
+
+### 🚧 In Progress
+- User authentication system
+- Application submission form
+- Basic admin dashboard
+
+## 🔧 Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/job-board.git
+
 First, run the development server:
 
 ```bash
