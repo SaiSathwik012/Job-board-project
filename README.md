@@ -8,6 +8,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 A modern job listing application built with Next.js, MongoDB, and Tailwind CSS.
 
 ![Job Board Screenshot](/public/screenshot.png) <!-- Add your screenshot here -->
+![image](https://github.com/user-attachments/assets/6bfaec38-b3b6-4464-acaa-e3ef8158fae9)
+![image](https://github.com/user-attachments/assets/6c738c8a-6e5e-4388-9b09-a6cc9f5cacf0)
+![image](https://github.com/user-attachments/assets/9ecda793-38e5-4ec9-b417-e4a90bc4c365)
+![image](https://github.com/user-attachments/assets/c6576789-2a04-4fed-8d94-3d16ec801914)
+#Responsive Desgn
+![image](https://github.com/user-attachments/assets/7c7d51a4-974c-44f3-885d-a29b4b126b11)
+![image](https://github.com/user-attachments/assets/ef68b083-8505-4540-b5d7-f7b5f19d997d)
 
 ## ✨ Features
 
