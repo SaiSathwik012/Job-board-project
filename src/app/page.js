@@ -11,7 +11,6 @@ import {
   FiDollarSign,
   FiMapPin,
   FiChevronDown,
-  FiClock
 } from "react-icons/fi";
 import "./globals.css";
 
