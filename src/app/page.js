@@ -11,8 +11,7 @@ import {
   FiDollarSign,
   FiMapPin,
   FiChevronDown,
-  FiClock,
-  FiStar
+  FiClock
 } from "react-icons/fi";
 import "./globals.css";
 
@@ -117,6 +116,7 @@ export default function JobBoard() {
     };
 
     fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -169,7 +169,6 @@ export default function JobBoard() {
       }
     });
 
-  
   const toggleFilter = (filterType, value) => {
     setSelectedFilters(prev => ({
       ...prev,
@@ -201,14 +200,14 @@ export default function JobBoard() {
               <Link href="/">
                 <div className="flex items-center">
                   <div className="h-12 w-40 relative">
-                  <Image
-                    src="/Images/logo.webp"
-                    alt="Company Logo"
-                    width={160}
-                    height={40}
-                    className="h-12 w-auto object-contain dark:filter-none"
-                    priority
-                  />
+                    <Image
+                      src="/Images/logo.webp"
+                      alt="Company Logo"
+                      width={160}
+                      height={40}
+                      className="h-12 w-auto object-contain dark:filter-none"
+                      priority
+                    />
                   </div>
                 </div>
               </Link>
@@ -238,7 +237,6 @@ export default function JobBoard() {
         </div>
       </nav>
 
-  
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-gray-800 dark:to-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
@@ -280,8 +278,8 @@ export default function JobBoard() {
                   key={type}
                   onClick={() => toggleFilter('jobType', type)}
                   className={`flex items-center px-4 py-2 rounded-full transition ${selectedFilters.jobType.includes(type)
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}
                 >
                   <FiBriefcase className="mr-2" />
@@ -294,8 +292,8 @@ export default function JobBoard() {
                   key={loc}
                   onClick={() => toggleFilter('location', loc)}
                   className={`flex items-center px-4 py-2 rounded-full transition ${selectedFilters.location.includes(loc)
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}
                 >
                   <FiMapPin className="mr-2" />
@@ -386,13 +384,14 @@ export default function JobBoard() {
 
                       <div className="mt-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${job.jobType === 'Full-Time' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                            job.jobType === 'Part-Time' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' :
-                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                          job.jobType === 'Part-Time' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' :
+                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                           }`}>
                           {job.jobType}
                         </span>
                       </div>
 
+                      {/* eslint-disable-next-line react/no-unescaped-entities */}
                       <p className="mt-4 text-gray-600 dark:text-gray-300 line-clamp-2">
                         {job.description}
                       </p>
@@ -403,9 +402,11 @@ export default function JobBoard() {
                             View Details
                           </button>
                         </Link>
-                        <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
-                          Apply Now
-                        </button>
+                        <Link href={`/job/${job._id}/apply`}>
+                          <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+                            Apply Now
+                          </button>
+                        </Link>
                       </div>
                     </div>
                   </motion.div>
@@ -438,7 +439,6 @@ export default function JobBoard() {
         )}
       </main>
 
-  
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="md:flex md:items-center md:justify-between">
@@ -466,4 +466,4 @@ export default function JobBoard() {
       </footer>
     </div>
   );
-}
+} 
