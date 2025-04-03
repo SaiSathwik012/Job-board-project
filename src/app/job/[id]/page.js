@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiArrowLeft, FiBriefcase, FiDollarSign, FiMapPin, FiClock } from "react-icons/fi";
+import { FiArrowLeft, FiBriefcase, FiDollarSign, FiMapPin } from "react-icons/fi";
 
 export default function JobApplication({ params }) {
     const [job, setJob] = useState(null);
@@ -86,7 +86,7 @@ export default function JobApplication({ params }) {
             <div className="max-w-4xl mx-auto p-8 text-center">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Job not found</h2>
                 <p className="mt-4 text-gray-600 dark:text-gray-400">
-                    The job you're looking for doesn't exist or may have been removed.
+                    The job you&apos;re looking for doesn t exist or may have been removed.
                 </p>
                 <Link href="/" className="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     <FiArrowLeft className="mr-2" />
