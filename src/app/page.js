@@ -11,6 +11,7 @@ import {
   FiDollarSign,
   FiMapPin,
   FiChevronDown,
+  FiClock
 } from "react-icons/fi";
 import "./globals.css";
 
@@ -95,7 +96,6 @@ export default function JobBoard() {
     }
   ];
 
-  // Fetch job listings from MongoDB
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -115,7 +115,6 @@ export default function JobBoard() {
     };
 
     fetchJobs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -390,7 +389,6 @@ export default function JobBoard() {
                         </span>
                       </div>
 
-                      {/* eslint-disable-next-line react/no-unescaped-entities */}
                       <p className="mt-4 text-gray-600 dark:text-gray-300 line-clamp-2">
                         {job.description}
                       </p>
@@ -465,4 +463,4 @@ export default function JobBoard() {
       </footer>
     </div>
   );
-} 
+}
