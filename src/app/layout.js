@@ -1,7 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
-export const metadata = {
+const metadata = {
   title: 'CareerConnect - Job Board',
   description: 'Find your dream job or post opportunities with CareerConnect',
   keywords: ['jobs', 'career', 'employment', 'hiring', 'recruitment'],
@@ -29,11 +29,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -68,4 +64,7 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
+export { metadata };
