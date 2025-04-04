@@ -1,81 +1,144 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { use } from "react";
+import { FiBriefcase, FiDollarSign, FiMapPin, FiClock, FiChevronLeft } from "react-icons/fi";
 import Link from "next/link";
-import { FiArrowLeft, FiBriefcase, FiDollarSign, FiMapPin } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
-export default function JobApplication({ params }) {
+// Sample data (would normally come from API)
+const sampleJobs = [
+    {
+        _id: "1",
+        jobTitle: "Frontend Developer",
+        companyName: "TechCorp",
+        description: `We are looking for an experienced frontend developer to join our team building modern web applications with React and Next.js. You will work closely with our design and backend teams to create responsive, accessible, and performant user interfaces.
+
+Responsibilities:
+- Develop new user-facing features
+- Build reusable components and front-end libraries
+- Optimize applications for maximum performance
+- Collaborate with team members on technical design
+- Participate in code reviews
+
+Requirements:
+- 3+ years experience with React
+- Proficient in JavaScript, HTML5, CSS3
+- Experience with Redux or similar state management
+- Familiarity with RESTful APIs
+- Knowledge of modern authorization mechanisms`,
+        salary: "$80K - $120K",
+        location: "San Francisco",
+        jobType: "Full-Time",
+        isFeatured: true,
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        requirements: [
+            "3+ years experience with React",
+            "Proficient in JavaScript, HTML5, CSS3",
+            "Experience with Redux or similar state management",
+            "Familiarity with RESTful APIs",
+            "Knowledge of modern authorization mechanisms"
+        ],
+        benefits: [
+            "Competitive salary and equity",
+            "Health, dental, and vision insurance",
+            "401(k) matching",
+            "Flexible work hours",
+            "Professional development budget"
+        ]
+    },
+    {
+        _id: "2",
+        jobTitle: "UX Designer",
+        companyName: "DesignHub",
+        description: `Join our design team to create beautiful and intuitive user experiences for our products. You'll be involved in the entire design process from concept to implementation.
+
+Responsibilities:
+- Create user flows, wireframes, and prototypes
+- Conduct user research and usability testing
+- Collaborate with product managers and engineers
+- Develop and maintain design systems
+- Present designs to stakeholders
+
+Requirements:
+- 2+ years of UX design experience
+- Portfolio demonstrating strong UX skills
+- Proficiency with Figma or similar tools
+- Understanding of user-centered design principles
+- Excellent communication skills`,
+        salary: "$70K - $100K",
+        location: "Remote",
+        jobType: "Full-Time",
+        isFeatured: false,
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        requirements: [
+            "2+ years of UX design experience",
+            "Portfolio demonstrating strong UX skills",
+            "Proficiency with Figma or similar tools",
+            "Understanding of user-centered design principles",
+            "Excellent communication skills"
+        ],
+        benefits: [
+            "Remote work flexibility",
+            "Annual design conference budget",
+            "Latest hardware and software",
+            "Wellness program",
+            "Generous vacation policy"
+        ]
+    }
+];
+
+async function fetchJobData(id) {
+    try {
+        // First try to fetch from API
+        const response = await fetch(`/api/jobs/${id}`);
+        if (response.ok) {
+            const data = await response.json();
+            return data.job;
+        }
+    } catch (error) {
+        console.error("Error fetching job:", error);
+    }
+
+    // Fallback to sample data if API fails
+    return sampleJobs.find(job => job._id === id) || null;
+}
+
+export default function JobDetails({ params }) {
     const [job, setJob] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        resume: null,
-        coverLetter: ""
-    });
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
+    // Properly unwrap the params promise
+    const unwrappedParams = use(params);
+    const jobId = unwrappedParams.id;
+
     useEffect(() => {
-        const fetchJob = async () => {
-            try {
-                const response = await fetch(`/api/jobs/${params.id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch job details');
-                }
-                const data = await response.json();
-                setJob(data.job);
-            } catch (error) {
-                console.error("Error fetching job:", error);
-            } finally {
-                setIsLoading(false);
-            }
+        const loadJob = async () => {
+            const jobData = await fetchJobData(jobId);
+            setJob(jobData);
+            setLoading(false);
         };
 
-        fetchJob();
-    }, [params.id]);
+        loadJob();
+    }, [jobId]);
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: files ? files[0] : value
-        }));
+    const getDaysAgo = (date) => {
+        if (!date) return "Recently";
+        const diffInDays = Math.floor((new Date() - new Date(date)) / (1000 * 60 * 60 * 24));
+        return diffInDays === 0 ? "Today" : `${diffInDays}d ago`;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const formPayload = new FormData();
-            Object.entries(formData).forEach(([key, value]) => {
-                if (value) formPayload.append(key, value);
-            });
-
-            const response = await fetch(`/api/jobs/${params.id}/apply`, {
-                method: 'POST',
-                body: formPayload
-            });
-
-            if (response.ok) {
-                alert('Application submitted successfully!');
-                router.push('/');
-            } else {
-                throw new Error('Application failed');
-            }
-        } catch (error) {
-            console.error('Error submitting application:', error);
-            alert('Failed to submit application. Please try again.');
-        }
-    };
-
-    if (isLoading) {
+    if (loading) {
         return (
-            <div className="max-w-4xl mx-auto p-8">
-                <div className="animate-pulse space-y-4">
-                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                    <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                    <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
+                <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-pulse">
+                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-6"></div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-8"></div>
+                    <div className="space-y-4">
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
@@ -83,15 +146,17 @@ export default function JobApplication({ params }) {
 
     if (!job) {
         return (
-            <div className="max-w-4xl mx-auto p-8 text-center">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Job not found</h2>
-                <p className="mt-4 text-gray-600 dark:text-gray-400">
-                    The job you&apos;re looking for doesn&apos;t exist or may have been removed.
-                </p>
-                <Link href="/" className="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    <FiArrowLeft className="mr-2" />
-                    Back to Job Board
-                </Link>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-8">
+                <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Job Not Found</h1>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                        The job you&apos;re looking for doesn&apos;t exist or may have been removed.
+                    </p>
+                    <Link href="/" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        <FiChevronLeft className="mr-2" />
+                        Back to Job Board
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -99,124 +164,98 @@ export default function JobApplication({ params }) {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="max-w-4xl mx-auto p-4 sm:p-8">
-                <Link href={`/job/${params.id}`} className="flex items-center text-blue-600 dark:text-blue-400 hover:underline mb-6">
-                    <FiArrowLeft className="mr-2" />
-                    Back to Job Details
-                </Link>
-
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{job.jobTitle}</h1>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">{job.companyName}</p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div className="flex items-center text-gray-600 dark:text-gray-400">
-                            <FiBriefcase className="mr-2" />
-                            <span>{job.jobType}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600 dark:text-gray-400">
-                            <FiDollarSign className="mr-2" />
-                            <span>{job.salary || 'Not specified'}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600 dark:text-gray-400">
-                            <FiMapPin className="mr-2" />
-                            <span>{job.location}</span>
-                        </div>
-                    </div>
-
-                    <div className="prose dark:prose-invert max-w-none">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Job Description</h3>
-                        <p className="text-gray-600 dark:text-gray-300">{job.description}</p>
-                    </div>
+                <div className="mb-6">
+                    <Link href="/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                        <FiChevronLeft className="mr-2" />
+                        Back to all jobs
+                    </Link>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Apply for this Position</h2>
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+                    <div className="p-6 sm:p-8">
+                        <div className="flex justify-between items-start">
                             <div>
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Full Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    required
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                                />
+                                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                                    {job.jobTitle}
+                                </h1>
+                                <h2 className="text-xl text-gray-700 dark:text-gray-300 mb-6">
+                                    {job.companyName}
+                                </h2>
                             </div>
+                            {job.isFeatured && (
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                    Featured
+                                </span>
+                            )}
+                        </div>
 
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                                />
+                        <div className="flex flex-wrap gap-4 mb-8">
+                            <div className="flex items-center text-gray-700 dark:text-gray-300">
+                                <FiBriefcase className="mr-2" />
+                                <span>{job.jobType}</span>
                             </div>
-
-                            <div>
-                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Phone Number
-                                </label>
-                                <input
-                                    type="tel"
-                                    id="phone"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                                />
+                            <div className="flex items-center text-gray-700 dark:text-gray-300">
+                                <FiDollarSign className="mr-2" />
+                                <span>{job.salary}</span>
                             </div>
-
-                            <div>
-                                <label htmlFor="resume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Resume (PDF)
-                                </label>
-                                <input
-                                    type="file"
-                                    id="resume"
-                                    name="resume"
-                                    accept=".pdf,.doc,.docx"
-                                    required
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400 dark:hover:file:bg-blue-800/30"
-                                />
+                            <div className="flex items-center text-gray-700 dark:text-gray-300">
+                                <FiMapPin className="mr-2" />
+                                <span>{job.location}</span>
+                            </div>
+                            <div className="flex items-center text-gray-700 dark:text-gray-300">
+                                <FiClock className="mr-2" />
+                                <span>{getDaysAgo(job.createdAt)}</span>
                             </div>
                         </div>
 
-                        <div>
-                            <label htmlFor="coverLetter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Cover Letter (Optional)
-                            </label>
-                            <textarea
-                                id="coverLetter"
-                                name="coverLetter"
-                                rows="4"
-                                value={formData.coverLetter}
-                                onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                            />
+                        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Job Description</h3>
+                            <div className="prose dark:prose-invert max-w-none">
+                                {job.description.split('\n').map((paragraph, i) => (
+                                    <p key={i} className="text-gray-600 dark:text-gray-300 mb-4 whitespace-pre-line">
+                                        {paragraph}
+                                    </p>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        {job.requirements && job.requirements.length > 0 && (
+                            <div className="mt-8">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Requirements</h3>
+                                <ul className="list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-300">
+                                    {job.requirements.map((req, i) => (
+                                        <li key={i}>{req}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {job.benefits && job.benefits.length > 0 && (
+                            <div className="mt-8">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Benefits</h3>
+                                <ul className="list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-300">
+                                    {job.benefits.map((benefit, i) => (
+                                        <li key={i}>{benefit}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <div className="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <Link
+                                href={`/job/${job._id}/apply`}
+                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg text-center font-medium transition"
                             >
-                                Submit Application
+                                Apply Now
+                            </Link>
+                            <button
+                                onClick={() => router.back()}
+                                className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white py-3 px-6 rounded-lg font-medium transition"
+                            >
+                                Back
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
